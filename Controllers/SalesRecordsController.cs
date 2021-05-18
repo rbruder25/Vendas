@@ -10,7 +10,7 @@ namespace SalesWebMvc.Controllers
     {
         private readonly SalesRecordService _salesRecordService;
 
-        public  SalesRecordsController(SalesRecordService salesRecordService)
+        public SalesRecordsController(SalesRecordService salesRecordService)
         {
             _salesRecordService = salesRecordService;
         }
@@ -21,26 +21,38 @@ namespace SalesWebMvc.Controllers
             return View();
         }
 
-        public async Task<IActionResult> SimpleSearch(DateTime? minDate, DateTime? maxdate)
+        public async Task<IActionResult> SimpleSearch(DateTime? minDate, DateTime? maxDate)
         {
             if (!minDate.HasValue)
             {
-                minDate = new DateTime(DateTime.Now.Year,1, 1);
+                minDate = new DateTime(DateTime.Now.Year, 1, 1);
             }
-            if(!maxdate.HasValue)
+            if (!maxDate.HasValue)
             {
-                maxdate = DateTime.Now;
+                maxDate = DateTime.Now;
             }
 
             ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
-            ViewData["maxDate"] = maxdate.Value.ToString("yyyy-MM-dd");
-            var result = await _salesRecordService.FindBynameAsync(minDate, maxdate);
+            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
+            var result = await _salesRecordService.FindBynameAsync(minDate, maxDate);
             return View(result);
         }
 
-        public IActionResult GroupingSearch()
+        public async Task<IActionResult> GroupingSearch(DateTime? minDate, DateTime? maxDate)
         {
-            return View();
+            if (!minDate.HasValue)
+            {
+                minDate = new DateTime(DateTime.Now.Year, 1, 1);
+            }
+            if (!maxDate.HasValue)
+            {
+                maxDate = DateTime.Now;
+            }
+
+            ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
+            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
+            var result = await _salesRecordService.FindByDateGroupingAsync(minDate, maxDate);
+            return View(result);
         }
     }
 }
